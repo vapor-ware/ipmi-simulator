@@ -5,13 +5,18 @@
 VERSION  := 0.1
 IMG_NAME := vaporio/ipmi-simulator
 
+TAGS := ${IMG_NAME}:latest ${IMG_NAME}:${VERSION}
+
+
+.PHONY: tags
+tags:  ## Print the tags used for the Docker images
+	@echo "${TAGS}"
 
 .PHONY: build
 build:  ## Build the Docker image for IPMI Simulator
-	docker build -f Dockerfile \
-		-t  ${IMG_NAME}:latest \
-		-t  ${IMG_NAME}:${VERSION} \
-		.
+	tags="" ; \
+	for tag in $(TAGS); do tags="$${tags} -t $${tag}"; done ; \
+	docker build -f Dockerfile $${tags} .
 
 .PHONY: run
 run: build  ## Build and run the IPMI Simulator locally (localhost:623/udp)
@@ -19,7 +24,7 @@ run: build  ## Build and run the IPMI Simulator locally (localhost:623/udp)
 
 .PHONY: version
 version:  ## Print the version of IPMI Simulator
-	@echo "$(VERSION)"
+	@echo "${VERSION}"
 
 .PHONY: help
 help:  ## Print Make usage information
