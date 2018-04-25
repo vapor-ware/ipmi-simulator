@@ -10,6 +10,10 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Install Dependencies
+          command: |
+            apk add --update --no-cache musl-dev make
+      - run:
           name: Build Images
           command: |
             make build
