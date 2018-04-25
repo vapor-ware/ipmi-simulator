@@ -20,7 +20,7 @@ build:  ## Build the Docker image for IPMI Simulator
 
 .PHONY: run
 run: build  ## Build and run the IPMI Simulator locally (localhost:623/udp)
-	docker run -d -p 623:623/udp ${IMG_NAME}
+	docker run -d -p 623:623/udp --name ipmisim ${IMG_NAME}
 
 .PHONY: version
 version:  ## Print the version of IPMI Simulator
