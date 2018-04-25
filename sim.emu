@@ -1,0 +1,63 @@
+#
+# Emulation setup file for the IPMI server
+#
+
+# The BMC is the MC at address 20
+mc_setbmc 0x20
+
+# Now add the BMC
+#      IPMB DevID DevSDRs?       Rev   Maj   Min   Dev   MFG      Prod
+#                                      FW    FW    Sup   ID       Id
+#                                      Rev   Rev
+mc_add 0x20 0     no-device-sdrs 0x23  0x09  0x08  0x9f  0x1291  0xf02 persist_sdr
+sel_enable 0x20 1000 0x0a
+
+mc_add_fru_data 0x20 0 2048 \
+  file 0 "/sys/class/i2c-adapter/i2c-0/0-0051/at24c128"
+
+#          MC LUN Sens# type reading
+# Switch Temp
+sensor_add 0x20  0    1     1     1
+# Switch CPU Temp
+sensor_add 0x20  0    2     1     1
+# Switch 12V
+sensor_add 0x20  0    3     2     1
+# Switch 3.3V
+sensor_add 0x20  0    4     2     1
+# Switch 1.8V
+sensor_add 0x20  0    5     2     1
+
+# Chassis fans
+sensor_add 0x20  0   0x70   4     1
+sensor_add 0x20  0   0x71   4     1
+sensor_add 0x20  0   0x72   4     1
+sensor_add 0x20  0   0x73   4     1
+sensor_add 0x20  0   0x74   4     1
+sensor_add 0x20  0   0x75   4     1
+sensor_add 0x20  0   0x76   4     1
+sensor_add 0x20  0   0x77   4     1
+
+# Power supply sensors
+sensor_add 0x20  0    8     8     0x6f
+sensor_add 0x20  0    9     8     0x6f
+sensor_add 0x20  0   10     2     1 poll 2000 \
+	file "/sys/class/wixpmbus/VOUT_1" mult=8 div=125 sub=10000 \
+	depends=0x20,0,8,0
+sensor_add 0x20  0   11     2     1 poll 2000 \
+	file "/sys/class/wixpmbus/VOUT_2" mult=8 div=125 sub=10000 \
+	depends=0x20,0,9,0
+sensor_add 0x20  0   12     3     1 poll 2000 \
+	file "/sys/class/wixpmbus/IOUT_1" div=1000 \
+	depends=0x20,0,8,0
+sensor_add 0x20  0   13     3     1 poll 2000 \
+	file "/sys/class/wixpmbus/IOUT_2" div=1000 \
+	depends=0x20,0,9,0
+sensor_add 0x20  0   14     3     1 poll 2000 \
+	file "/sys/class/wixpmbus/POUT_1" div=10000 \
+	depends=0x20,0,8,0
+sensor_add 0x20  0   15     3     1 poll 2000 \
+	file "/sys/class/wixpmbus/POUT_2" div=10000 \
+	depends=0x20,0,9,0
+
+# Turn on the BMC
+mc_enable 0x20
