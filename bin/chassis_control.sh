@@ -56,9 +56,24 @@ set_power() {
 }
 
 
+# Get the boot target
+get_boot() {
+    path="$chassis_ctrl_path/boot"
 
+    # If there is no boot state set yet, set the boot state to "default".
+    if [ ! -f "$path" ]; then
+        echo "default" > "$path"
+    fi
 
+    value=`cat ${path}`
+    echo "$value"
+}
 
+# Set the boot target.
+set_boot() {
+    path="$chassis_ctrl_path/boot"
+    echo $1 > "$path"
+}
 
 
 
@@ -82,12 +97,14 @@ shift
 do_get() {
     while [ "x$1" != "x" ]; do
     case $1 in
+        # Get the power state (on/off)
         power)
             val=$(get_power)
         ;;
 
+        # Get the boot target (default/pxe/none/etc.)
         boot)
-            val=default
+            val=$(get_boot)
         ;;
 
         # Note that reset has no get
@@ -105,51 +122,63 @@ do_get() {
 
 do_set() {
     while [ "x$1" != "x" ]; do
-    parm="$1"
+    param="$1"
     shift
     if [ "x$1" = "x" ]; then
-        err "No value present for parameter $parm"
+        err "No value present for parameter $param"
         exit 1
     fi
     val="$1"
     shift
 
-    case ${parm} in
+    case ${param} in
+        # ON/OFF: $val will either be 1 (on) or 0 (off)
         power)
             set_power ${val}
         ;;
 
+        # RESET: set the power to on
         reset)
+            set_power 1
         ;;
 
+        # BOOT TARGET: set the boot target
         boot)
-        case $val in
-            none)
-            ;;
-            pxe)
-            ;;
-                cdrom)
-            ;;
-            bios)
+            case ${val} in
+                none)
+                    set_boot "none"
                 ;;
-            default)
-                   ;;
-            *)
-            err "Invalid boot value: $val"
-            exit 1
-            ;;
-        esac
+                pxe)
+                    set_boot "pxe"
+                ;;
+                disk)
+                    set_boot "disk"
+                ;;
+                cdrom)
+                    set_boot "cdrom"
+                ;;
+                bios)
+                    set_boot "bios"
+                ;;
+                default)
+                    set_boot "default"
+                ;;
+                *)
+                    err "Invalid boot value: $val"
+                    exit 1
+                ;;
+            esac
         ;;
 
-            identify)
-        interval=$val
-        force=$1
-        shift
+        # IDENTIFY
+        identify)
+            debug "chassis identify: interval=${val}s"
+            shift
         ;;
 
         *)
-        err "Invalid parameter: $parm"
-        exit 1
+            err "Invalid parameter: $param"
+            exit 1
         ;;
     esac
     done
@@ -157,19 +186,19 @@ do_set() {
 
 do_check() {
     # Check is not supported for chassis control
+    err "Check is not supported for chassis control"
     exit 1
 }
 
-case $op in
+case ${op} in
     get)
-    do_get $@
+        do_get $@
     ;;
     set)
-    do_set $@
+        do_set $@
     ;;
-
     check)
-    do_check $@
+        do_check $@
     ;;
 
 *)

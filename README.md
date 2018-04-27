@@ -56,5 +56,42 @@ Drive Fault          : false
 Cooling/Fan Fault    : false
 ```
 
-> Note that not all `ipmitool` commands are likely to work, since this is currently just
-> a simple simulator with minimal configuration.
+### ipmitool support
+Note that not all `ipmitool` commands are likely to work, since this is currently just
+a simple simulator with minimal configuration. The snippet below describes the commands
+that are currently supported by the IPMI similator via ipmitool
+
+```bash
+# Firmware Version
+ipmitool [options] mc info
+
+# User
+ipmitool [options] user summary
+ipmitool [options] user list
+
+# Chassis Commands
+ipmitool [options] chassis status
+
+# Chassis Power Commands
+ipmitool [options] chassis power on
+ipmitool [options] chassis power off
+ipmitool [options] chassis power cycle
+ipmitool [options] chassis power reset
+ipmitool [options] chassis power status
+
+# Chassis Power Commands (same as above block)
+ipmitool [options] power on
+ipmitool [options] power off
+ipmitool [options] power cycle
+ipmitool [options] power reset
+ipmitool [options] power status
+
+# Chassis Identify
+ipmitool [options] identify [value]
+
+# Get Boot Target
+ipmitool [options] chassis bootparam get 5
+
+# Set Boot Target
+ipmitool [options] chassis bootdev [none|pxe|disk|cdrom|bios]
+```
