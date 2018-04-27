@@ -1,4 +1,7 @@
 # IPMI Simulator
+
+[![CircleCI](https://circleci.com/gh/vapor-ware/ipmi-simulator/tree/master.svg?style=shield)](https://circleci.com/gh/vapor-ware/ipmi-simulator/tree/master)
+
 `ipmi_sim` in a lightweight Docker container.
 
 ## Usage
