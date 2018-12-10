@@ -5,12 +5,18 @@
 # The BMC is the MC at address 20
 mc_setbmc 0x20
 
-# Now add the BMC
-#      IPMB DevID DevSDRs?       Rev   Maj   Min   Dev   MFG      Prod
-#                                      FW    FW    Sup   ID       Id
-#                                      Rev   Rev
-mc_add 0x20 0     no-device-sdrs 0x23  0x09  0x08  0x9f  0x1291  0xf02 persist_sdr
-sel_enable 0x20 1000 0x0a
+# Add the BMC
+#       IPMB  DevID  Has Device      Device  Major   Minor   Device  Manufctr  Product
+#       Addr         SDRs?           Rev     FW Rev  FW Rev  Supprt  ID        ID
+#
+mc_add  0x20  0      no-device-sdrs  0x23    0x09    0x08    0x9f    0x1291    0xf02    persist_sdr
+
+# Enable the System Event Log
+#           MC    Max      Flags
+#           ADDR  Entries
+#
+sel_enable  0x20  1000     0x0a
+
 
 # Watchdog sensor. This must be sensor zero.
 sensor_add 0x20 0 0 35 0x6f event-only

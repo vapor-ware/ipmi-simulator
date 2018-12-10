@@ -1,6 +1,6 @@
 # IPMI Simulator
 
-[![CircleCI](https://circleci.com/gh/vapor-ware/ipmi-simulator/tree/master.svg?style=shield)](https://circleci.com/gh/vapor-ware/ipmi-simulator/tree/master)
+[![Build Status](https://build.vio.sh/buildStatus/icon?job=vapor-ware/ipmi-simulator/master)](https://build.vio.sh/blue/organizations/jenkins/vapor-ware%2Fipmi-simulator/activity)
 
 `ipmi_sim` in a lightweight Docker container.
 

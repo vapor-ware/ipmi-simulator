@@ -1,0 +1,34 @@
+#!/usr/bin/env groovy
+
+pipeline {
+
+  agent any
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    // Build the Docker image
+    stage('Build') {
+      steps {
+        make build
+      }
+    }
+
+    // Push the Docker image
+    stage('Push') {
+      when {
+        //branch 'master'
+        branch 'jenkins-ci'
+      }
+      steps {
+        withDockerRegistry(registry: [credentialsId: 'vio-docker-hub']) {
+          sh 'for tag in $(make tags); do docker push ${tag}; done'
+        }
+      }
+    }
+  }
+}
