@@ -14,7 +14,7 @@ pipeline {
     // Build the Docker image
     stage('Build') {
       steps {
-        make build
+        sh 'make build'
       }
     }
 
