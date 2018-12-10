@@ -21,8 +21,7 @@ pipeline {
     // Push the Docker image
     stage('Push') {
       when {
-        //branch 'master'
-        branch 'jenkins-ci'
+        branch 'master'
       }
       steps {
         withDockerRegistry(registry: [credentialsId: 'vio-docker-hub']) {
