@@ -1,33 +1,12 @@
 #!/usr/bin/env groovy
 
-pipeline {
+// Include this shared CI repository to load script helpers and libraries.
+library identifier: 'vapor@1.0.0-RC10', retriever: modernSCM([
+    $class: 'GitSCMSource',
+    remote: 'https://github.com/vapor-ware/ci-shared.git',
+    credentialsId: 'vio-bot-gh',
+])
 
-  agent any
-
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
-
-    // Build the Docker image
-    stage('Build') {
-      steps {
-        sh 'make build'
-      }
-    }
-
-    // Push the Docker image
-    stage('Push') {
-      when {
-        branch 'master'
-      }
-      steps {
-        withDockerRegistry(registry: [credentialsId: 'vio-docker-hub']) {
-          sh 'for tag in $(make tags); do docker push ${tag}; done'
-        }
-      }
-    }
-  }
-}
+dockerBuildPipeline([
+    'image': 'vaporio/ipmi-simulator',
+])
